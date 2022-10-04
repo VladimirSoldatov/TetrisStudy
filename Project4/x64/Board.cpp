@@ -12,22 +12,27 @@ void Board::control_user_input() {
 
 	switch (key) {
 	case 'd': //right
-		if (!is_collide(x + 1, y)) {
+		/*if (!is_collide(x + 1, y)) {
 			move_block(x + 1, y);
 		}
+		*/
 		break;
 	case 'a': //left
-		if (!is_collide(x - 1, y)) {
+		/* if (!is_collide(x - 1, y)) {
 			move_block(x - 1, y);
-		}
+			
+		}*/
 		break;
 	case 's': //down
-		if (!is_collide(x, y + 1)) {
+		/* if (!is_collide(x, y + 1)) {
 			move_block(x, y + 1);
 		}
+		*/
 		break;
 	case 'w': //rotate
-		rotate_block();
+		/*rotate_block();
+		*/
+		break;
 	}
 }
 
@@ -86,7 +91,7 @@ void Board::init_draw_main() {
 		}
 	}
 
-	clear_line();
+	//clear_line();
 	new_block();
 	re_draw_main();
 }
@@ -101,7 +106,7 @@ void Board::re_draw_main() {
 				std::cout << " " << std::flush;
 				break;
 			case POS_FILLED: //Block
-				std::cout << "@" << std::flush;
+				std::cout << "x" << std::flush;
 				break;
 			case POS_BORDER: //Border
 				std::cout << "$" << std::flush;
@@ -142,7 +147,6 @@ void Board::new_block() {
 		}
 	}
 }
-
 void Board::move_block(int x2, int y2) {
 	//Remove block
 	for (size_t i = 0; i < 4; i++) {
@@ -163,62 +167,6 @@ void Board::move_block(int x2, int y2) {
 
 	re_draw_main();
 }
-void Board::rotate_block() {
-
-	int tmp[4][4];
-
-	for (size_t i = 0; i < 4; i++) { //Save temporarily block
-		for (size_t j = 0; j < 4; j++) {
-			tmp[i][j] = mblock[i][j];
-		}
-	}
-
-	for (size_t i = 0; i < 4; i++) { //Rotate
-		for (size_t j = 0; j < 4; j++) {
-			mblock[i][j] = tmp[3 - j][i];
-		}
-	}
-
-	if (is_collide(x, y)) { // And stop if it overlaps not be rotated
-		for (size_t i = 0; i < 4; i++) {
-			for (size_t j = 0; j < 4; j++) {
-				mblock[i][j] = tmp[i][j]; //return back.
-			}
-		}
-	}
-
-	for (size_t i = 0; i < 4; i++) {
-		for (size_t j = 0; j < 4; j++) {
-			main_board[y + i][x + j] -= tmp[i][j]; //remove before changing
-			main_board[y + i][x + j] += mblock[i][j]; //add new block data after rotation.
-		}
-	}
-
-	re_draw_main();
-}
-
-void Board::clear_line() {
-
-	for (int j = 0; j <= HEIGHT - 3; j++) {
-		int i = 1;
-		while (i <= WIDTH - 3) {
-			if (main_board[j][i] == POS_FREE) {
-				break;
-			}
-			i++;
-		}
-
-		if (i == WIDTH - 2) {
-			// Moves all the upper lines one row down
-			for (int k = j; k > 0; k--) {
-				for (int idx = 1; idx <= WIDTH - 3; idx++) {
-					main_board[k][idx] = main_board[k - 1][idx];
-				}
-			}
-		}
-	}
-}
-
 bool Board::is_collide(int x2, int y2) {
 	//because every block definition array is 4 * 4 length array. i will traverse from 0 to 4.
 	for (size_t i = 0; i < 4; i++) {
@@ -231,15 +179,19 @@ bool Board::is_collide(int x2, int y2) {
 	return false;
 }
 
+
 bool Board::is_game_over() {
 	return isGameOver;
 }
 
-void Board::processing_block() {
+void Board::processing_block()
+{
 	if (!is_collide(x, y + 1)) {
 		move_block(x, y + 1);
+		
 	} else { //if block cannot move to down anymore, make a new block.
-		clear_line();
+	
+	//	clear_line();
 		save_present_board_to_cpy();
 		new_block();
 		re_draw_main();
